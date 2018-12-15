@@ -1,6 +1,7 @@
 import csv
 import collections
 from enum import Enum, auto
+import numpy
 
 
 class CsvLoader(object):
@@ -48,6 +49,24 @@ class CsvLoader(object):
                 language = language.replace("C++", "Cpp")
                 code_list = []
             code_list.append(row[code_column_index])
+
+
+def split_to_test_and_training(data, ratio):
+    numpy.random.shuffle(data)
+    training_data_size = int(len(data) * (1 - ratio))
+
+    training_data = data[:training_data_size]
+    test_data = data[:-training_data_size]
+
+    training_data = list(flatten_project_data(training_data))
+    return training_data, test_data
+
+
+def flatten_project_data(data):
+    for project in data:
+        for code in project.codes:
+            yield [code, project.language]
+
 
 
 class Languages(Enum):
