@@ -13,7 +13,6 @@ class CsvLoader(object):
         self._file = open(path)
         self._file_handle = csv.reader(self._file, delimiter=',')
 
-
     def next(self):
         return self._file_handle.__next__()
 
@@ -27,8 +26,9 @@ class CsvLoader(object):
         self._file.close()
 
     def get_projects_list(self):
-        project_list = []
+        return list(self._generate_list())
 
+    def _generate_list(self):
         project_id_column_index = 1
         code_column_index = 3
         language_column_index = 0
@@ -40,15 +40,14 @@ class CsvLoader(object):
         language = first_row[language_column_index]
         language = language.replace("C++", "Cpp")
         for row in self:
-            if(row[project_id_column_index] != project_id):
+            if (row[project_id_column_index] != project_id):
                 project_struct = self.ProjectTuple(codes=code_list, language=Languages[language])
-                project_list.append(project_struct)
+                yield project_struct
                 project_id = row[project_id_column_index]
                 language = row[language_column_index]
                 language = language.replace("C++", "Cpp")
                 code_list = []
             code_list.append(row[code_column_index])
-        return project_list
 
 
 class Languages(Enum):
