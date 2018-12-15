@@ -31,3 +31,20 @@ class TestCsvLoader(TestCase):
         # then
         csv_loader.close()
         self.assertTrue(True)
+
+    def test_get_project_list(self):
+        # given
+        csv_loader = dm.CsvLoader("../data.csv")
+
+        # when
+        project_list = csv_loader.get_projects_list()
+
+        project_tuple = project_list[1]
+        project_language = project_tuple.language
+        project_codes_length = len(project_tuple.codes)
+
+        # then
+        csv_loader.close()
+        self.assertIsNotNone(project_language)
+        self.assertIsNotNone(project_codes_length)
+
