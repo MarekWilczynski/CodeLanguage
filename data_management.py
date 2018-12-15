@@ -5,17 +5,17 @@ from enum import Enum, auto
 
 class CsvLoader(object):
 
-    file_handle = []
-    file = []
+    _file_handle = []
+    _file = []
     ProjectTuple = collections.namedtuple("ProjectTuple", "codes language")
 
     def __init__(self, path="data.csv"):
-        self.file = open(path)
-        self.file_handle = csv.reader(self.file, delimiter=',')
+        self._file = open(path)
+        self._file_handle = csv.reader(self._file, delimiter=',')
 
 
     def next(self):
-        return self.file_handle.__next__()
+        return self._file_handle.__next__()
 
     def __next__(self):
         return self.next()
@@ -24,7 +24,7 @@ class CsvLoader(object):
         return self
 
     def close(self):
-        self.file.close()
+        self._file.close()
 
     def get_projects_list(self):
         project_list = []
