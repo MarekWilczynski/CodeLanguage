@@ -63,8 +63,8 @@ class TestDataManagement(TestCase):
         # then
 
         csv_loader.close()
-        self.assertIsNotNone(training_example[0])
-        self.assertIsNotNone(training_example[1])
+        self.assertIsNotNone(training_example.code)
+        self.assertIsNotNone(training_example.language)
         self.assertIsNotNone(test_example.language)
         self.assertIsNotNone(test_example.codes)
 

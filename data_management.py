@@ -50,6 +50,7 @@ class CsvLoader(object):
                 code_list = []
             code_list.append(row[code_column_index])
 
+TrainingTuple = collections.namedtuple("TrainingTupleTuple", "code language")
 
 def split_to_test_and_training(data, ratio):
     numpy.random.shuffle(data)
@@ -65,7 +66,7 @@ def split_to_test_and_training(data, ratio):
 def flatten_project_data(data):
     for project in data:
         for code in project.codes:
-            yield [code, project.language]
+            yield TrainingTuple(code, project.language)
 
 
 

@@ -9,8 +9,7 @@ class FeatureExtractor(object):
     def _create_word_map(self, data_set):
         word_indexes_map = dict()
         for project in data_set:
-            for code in project[0]:
-                splitted_code = self._split_words_and_characters(code)
+                splitted_code = self._split_words_and_characters(project)
                 self._add_words_to_map(splitted_code, word_indexes_map)
         self._word_map = word_indexes_map
 

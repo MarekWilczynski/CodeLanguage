@@ -15,7 +15,7 @@ class TestFeatureExtractor(TestCase):
 
     def test__add_words_to_map(self):
         # given
-        test_data = [[["h e h e { niezły test.bardzo } "]]]
+        test_data = ["h e h e { niezły test.bardzo } "]
         extractor = fe.FeatureExtractor(test_data)
 
         # when

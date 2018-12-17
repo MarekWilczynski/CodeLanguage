@@ -1,24 +1,15 @@
 import sklearn
-import abc
 
 
-class Classifier(abc.ABC):
-    model = []
-    data_transformator = []
-
-    def classify(self, data):
-        return
-
-    def start_training(self, data, labels):
-        return
+class SvmClassifier(sklearn.svm.SVC):
+    pass
+    # created for the sake of consistency
 
 
-class SvmClassifier(Classifier):
-    def __init__(self, data_transformator):
-        self.model = sklearn.svm.SVC(kernel='linear')
+class AnnClassifier(sklearn.base.BaseEstimator, sklearn.base.TransformerMixin):
+    # TODO: implement ANN
+    def fit(self, X, y):
+        pass
 
-    def start_training(self, data, labels):
-        self.model.fit(data, labels)
-
-    def classify(self, data):
-        return self.model.predict(data)
+    def transform(self, X):
+        pass
