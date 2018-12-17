@@ -24,7 +24,7 @@ class FeatureExtractor(object):
     @classmethod
     def _add_words_to_map(cls, splitted_code, words_dictionary):
             for word in splitted_code:
-                if (not word in words_dictionary): #TODO? result = ''.join([i for i in s if not i.isdigit()]) <- removing digits
+                if (not word in words_dictionary and not word.isdigit()):
                     words_dictionary[word] = len(words_dictionary)
 
     @classmethod
@@ -37,8 +37,9 @@ class FeatureExtractor(object):
         features = [0] * len(self._word_map)
         splitted_code = self._split_words_and_characters(code)
         for word in splitted_code:
-            feature_index = self._word_map[word]
-            features[feature_index] = features[feature_index] + 1
+            if(not word.isdigit()):
+                feature_index = self._word_map[word]
+                features[feature_index] = features[feature_index] + 1
         return features
 
     def get_feature_vector(self, code):
