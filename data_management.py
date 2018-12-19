@@ -25,9 +25,13 @@ class CsvLoader(object):
 
     def close(self):
         self._file.close()
+        _file_handle = []
+        _file = []
 
     def get_projects_list(self):
-        return list(self._generate_list())
+        project_data = list(self._generate_list())
+        self.close()
+        return project_data
 
     def _generate_list(self):
         project_id_column_index = 1
@@ -50,7 +54,7 @@ class CsvLoader(object):
                 code_list = []
             code_list.append(row[code_column_index])
 
-TrainingTuple = collections.namedtuple("TrainingTupleTuple", "code language")
+TrainingTuple = collections.namedtuple("TrainingTuple", "code language")
 
 def split_to_test_and_training(data, ratio):
     numpy.random.shuffle(data)
