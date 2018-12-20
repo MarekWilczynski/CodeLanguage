@@ -1,0 +1,13 @@
+Program zakłada, że wszystkie pliki w obrębie projektu pisane są w jednym języku programowania. Jeśli tak nie jest, to wyniki są przekłamane.
+
+Rozważałem wykorzystanie drzew decyzyjnych i sieci neuronowych do klasyfikacji. Sieci drzewa decyzyjne nie sprawdziły się. Sieci neuronowych z kolei nie zdążyłem zaimplementować.
+
+Kolejną rzeczą, którą chciałem zaimplementować, jednak brakło mi czasu jest ekstrakcja cech z użyciem sieci neuronowych. Zaproponowana metoda bazuje wyłącznie na ilościowej obecności słów, nie analizuje w żaden sposób ich kontekstu. Analizując trigamy osiągniętę mogłoby zostać znacznie lepsze efekty.
+
+Niestety, nie przyszło mi do głowy lepsze rozwiązanie niż storzenie słownika jako obiektu klasy dictionary. Rozwiązanie pożera całą górę pamięci i należy do kiepskich. Lepszym rozwiązaniem byłaby umówiona powyżej sieć neuronowa. Nie posiadam jednak wystarczająco dużo doświadczenia by stwierdzić, że nie zajmowałaby ona jeszcze więcej pamięci.
+Kolejnym rozwiązaniem problemu z pamięcią mogłoby być wczytywanie paczek projektów. Nie rozwiązałoby to jednak problemu konieczności stworzenia ogromnego słownika. Nie zostało to zaimplementowane ze względu na konieczność uprzedniego przemieszania projektów. Ponieważ pliki w dostarczonym pliku są poukładane, podzielenie danych na zestaw testowy i treningowy musiałoby się odbyć przez stworzenie kopii dostarczonego pliku.
+Powstrzymałem sie jednak od implementacji tych rozwiązań by nie tworzyć więcej kodu do sprawdzania, oraz by móc więcej czasu poświęcić implementacje modelu.
+
+Zapraszam do zapoznania się z diagramami znajdującymi się w folderze "Diagrams" w celu zapoznania się przed logiką aplikacji przed rozpatrzeniem kodu.
+Pozdrawiam!
+Marek Wilczyński
