@@ -9,7 +9,7 @@ class FeatureExtractor(object):
     def _create_word_map(self, data_set):
         word_indexes_map = dict()
         for proj in data_set:
-            for code in proj.codes:
+            for code in proj:
                     splitted_code = self._split_words_and_characters(code)
                     self._add_words_to_map(splitted_code, word_indexes_map)
         self._word_map = word_indexes_map
@@ -37,23 +37,11 @@ class FeatureExtractor(object):
         features = [0] * len(self._word_map)
         splitted_code = self._split_words_and_characters(code)
         for word in splitted_code:
-            if(not word.isdigit()):
+            if(not word.isdigit()):  # 'and word in self._word_map.keys()' not used, because of usage destination
                 feature_index = self._word_map[word]
                 features[feature_index] = features[feature_index] + 1
         return features
 
-    def _get_words_presence(self, code):
-        # similiar to method above, but instead of count, returns binary feature
-        features = [0] * len(self._word_map)
-        splitted_code = self._split_words_and_characters(code)
-        for word in splitted_code:
-            if(not word.isdigit()):
-                feature_index = self._word_map[word]
-                features[feature_index] = 1
-        return features
-
     def get_feature_vector(self, code):
-        #
         feature_vector = self._get_words_count(code)
-        #feature_vector = self._get_words_presence(code)
         return feature_vector

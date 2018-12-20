@@ -9,48 +9,60 @@ import sklearn.metrics
 import sklearn.pipeline
 from sklearn import tree
 
-import classification
 import numpy as np
+from time import time
+
 
 # loading data
+t = time()
 data_manager = data_management.CsvLoader("data.csv")
-code_files_grouped_by_project = data_manager.get_projects_list()
-code_files_grouped_by_project = code_files_grouped_by_project[:9000]
+used_data_count = 9000  # this as much as my RAM can handle
+code_files_grouped_by_project, project_labels = data_manager.get_projects_list()
+code_files_grouped_by_project = code_files_grouped_by_project[:used_data_count]
+project_labels = project_labels[:used_data_count]
+
+print('Data loaded. Time elapsed: %.2f s' % (time() - t))
+t = time()
 
 # splitting data into training and test sets
 training_to_test_ratio = 0.2
-training_set, test_set = data_management.split_to_test_and_training(code_files_grouped_by_project,
-                                                                    training_to_test_ratio)
+training_codes, training_labels, test_set, test_labels = data_management.split_to_test_and_training(
+    code_files_grouped_by_project,
+    project_labels,
+    training_to_test_ratio)
+
 # extracting features
 feature_extractor = feature_extraction.FeatureExtractor(code_files_grouped_by_project)
-training_feature_matrix = np.array(
-    [feature_extractor.get_feature_vector(data_vector.code) for data_vector in training_set])
 
-training_labels = [data_set.language.value for data_set in training_set]
-training_set = []  # free memory
+print('Word dictionary completed. Time elapsed: %.2f s' % (time() - t))
+t = time()
+
+training_feature_matrix = np.array([feature_extractor.get_feature_vector(code) for code in training_codes])
+
+print('Features extracted Time elapsed: %.2f s' % (time() - t))
+t = time()
+
+training_codes = []  # free memory
 code_files_grouped_by_project = []  # free memory
 
 # creating pipeline 
 classifier = sklearn.svm.SVC(gamma='scale', kernel='linear')
-estimators = [('pca', sklearn.decomposition.PCA()), ('classifier', classifier)]
+estimators = [('pca', sklearn.decomposition.PCA(n_components=100)), ('classifier', classifier)]
+# n_components found via gridsearch
 pipeline = sklearn.pipeline.Pipeline(estimators)
-
-# gridsearch initialization
-param_grid = dict(pca__n_components=[100])
-classification_model = sklearn.model_selection.GridSearchCV(pipeline, param_grid=param_grid, cv=5, verbose=1, n_jobs=1)
+classification_model = pipeline
 
 # training
+training_labels = [label_enum.value for label_enum in training_labels]
 classification_model.fit(training_feature_matrix, training_labels)
 training_feature_matrix = []  # free memory
 
-print('Best estimator: %s' % str(classification_model.best_estimator_))
-print('Best index: %s' % str(classification_model.best_index_))
-print('Best params: %s' % str(classification_model.best_params_))
-print('Best score: %s' % str(classification_model.best_score_))
+print('Training finished. Time elapsed: %.2f s' % (time() - t))
+t = time()
 
 # testing on test data
 predicted_labels = list(classification.classify_projects(test_set, classification_model, feature_extractor))
 
-correct_labels = [proj.language.value for proj in test_set]
-print("Accuracy: %f" % sklearn.metrics.accuracy_score(predicted_labels, correct_labels))
+test_labels = [proj.value for proj in test_labels]
+print("Accuracy: %f" % sklearn.metrics.accuracy_score(predicted_labels, test_labels))
 

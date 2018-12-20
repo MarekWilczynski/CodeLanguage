@@ -4,11 +4,14 @@ from enum import Enum, auto
 import numpy
 
 
+class ProjectData(object):
+    language = []
+    codes = []
+
 class CsvLoader(object):
 
     _file_handle = []
     _file = []
-    ProjectTuple = collections.namedtuple("ProjectTuple", "codes language")
 
     def __init__(self, path="data.csv"):
         self._file = open(path)
@@ -29,9 +32,9 @@ class CsvLoader(object):
         _file = []
 
     def get_projects_list(self):
-        project_data = list(self._generate_list())
+        codes, languages = zip(*self._generate_list())
         self.close()
-        return project_data
+        return codes, languages
 
     def _generate_list(self):
         project_id_column_index = 1
@@ -46,32 +49,34 @@ class CsvLoader(object):
         language = language.replace("C++", "Cpp")
         for row in self:
             if (row[project_id_column_index] != project_id):
-                project_struct = self.ProjectTuple(codes=code_list, language=Languages[language])
-                yield project_struct
+                yield code_list, Languages[language]
                 project_id = row[project_id_column_index]
                 language = row[language_column_index]
                 language = language.replace("C++", "Cpp")
                 code_list = []
             code_list.append(row[code_column_index])
 
-TrainingTuple = collections.namedtuple("TrainingTuple", "code language")
 
-def split_to_test_and_training(data, ratio):
-    numpy.random.shuffle(data)
-    training_data_size = int(len(data) * (1 - ratio))
+def split_to_test_and_training(data, labels, ratio):
+    # sklearn split could not be used, because collection of singletons is not a valid collection
+    data_count = len(data)
+    split_index = int(ratio * data_count)
 
-    training_data = data[:training_data_size]
-    test_data = data[:-training_data_size]
+    training_data, training_labels = data[:-split_index], labels[:-split_index]
+    test_data, test_labels = data[:split_index], labels[:split_index]
 
-    training_data = list(flatten_project_data(training_data))
-    return training_data, test_data
+    training_data, training_labels = zip(*flatten_project_data(training_data, training_labels))
 
+    training_data = list(training_data)
+    test_data = list(test_data)
 
-def flatten_project_data(data):
-    for project in data:
-        for code in project.codes:
-            yield TrainingTuple(code, project.language)
+    return training_data, training_labels, test_data, test_labels
 
+def flatten_project_data(data, labels):
+    # method creates a list with a label assigned to each code
+    for codes, label in zip(data, labels):
+        for code in codes:
+            yield code, label
 
 
 class Languages(Enum):
